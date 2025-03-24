@@ -9,3 +9,9 @@ AIStockAnalytics är en **AI-driven aktieanalystjänst** som hjälper investerar
 ---
 
 ## 📂 Projektstruktur
+```
+/backend        → Python API och analysmotor
+/frontend       → Webbgränssnitt (React / HTML / JS)
+/data           → Analyserade aktiedata, masterfiler, rapporter
+/docs           → Dokumentation och roadmap
+```
