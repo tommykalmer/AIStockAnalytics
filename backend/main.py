@@ -71,3 +71,36 @@ def buy_toplist():
     mock_user.setdefault("purchased_reports", []).append(today)
     
     return {"status": "success", "message": f"Topplistan för {today} är köpt och tillgänglig"}
+
+from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
+from backend.database import SessionLocal
+from backend import models
+from pydantic import BaseModel
+
+# Databas-skapare (finns troligen redan)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Skapa Pydantic-modell för input
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    license: str  # gratis / premium / guld
+
+# Routen som skapar en användare
+@app.post("/create_user")
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Användaren finns redan")
+    
+    new_user = models.User(email=user.email, password=user.password, license=user.license)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"status": "success", "user_id": new_user.id}
