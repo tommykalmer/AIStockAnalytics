@@ -52,3 +52,22 @@ def check_license():
     if mock_user["license"] == "gratis" and mock_user["portfolio_count"] > 10:
         raise HTTPException(status_code=403, detail="Max 10 aktier i gratisversionen")
     return {"status": "ok", "message": f"Licensnivå: {mock_user['license']}"}
+
+# -------------------------------------------
+# Mock endpoint för att köpa dagens topplista
+# -------------------------------------------
+from datetime import date
+
+# Här skulle du senare koppla mot betalning
+@app.post("/buy_toplist")
+def buy_toplist():
+    today = str(date.today())
+    
+    # Kolla om användaren redan köpt dagens lista
+    if today in mock_user.get("purchased_reports", []):
+        return {"status": "already_purchased", "message": "Du har redan köpt dagens topplista"}
+
+    # Spara köpet (i verkligheten - skriv till databas)
+    mock_user.setdefault("purchased_reports", []).append(today)
+    
+    return {"status": "success", "message": f"Topplistan för {today} är köpt och tillgänglig"}
