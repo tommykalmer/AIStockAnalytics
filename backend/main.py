@@ -1,8 +1,29 @@
-# Importera FastAPI - ett modernt, snabbt webbramverk för API-utveckling
-from fastapi import FastAPI, HTTPException
+# main.py
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from datetime import date
+from pydantic import BaseModel
 
-# Skapa ett FastAPI-objekt som vår app kommer använda
+from backend.database import SessionLocal
+from backend import models
+from backend.auth import router as auth_router
+from backend.auth import get_password_hash
+
+# === Initiera FastAPI ===
 app = FastAPI()
+
+# === Lägg till CORS om frontend ska kommunicera ===
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# === Lägg till auth-routern ===
+app.include_router(auth_router)
 
 # -------------------------------------------
 # ROT-endpoint - Testa att API:t fungerar
@@ -56,29 +77,17 @@ def check_license():
 # -------------------------------------------
 # Mock endpoint för att köpa dagens topplista
 # -------------------------------------------
-from datetime import date
-
-# Här skulle du senare koppla mot betalning
 @app.post("/buy_toplist")
 def buy_toplist():
     today = str(date.today())
-    
-    # Kolla om användaren redan köpt dagens lista
+
     if today in mock_user.get("purchased_reports", []):
         return {"status": "already_purchased", "message": "Du har redan köpt dagens topplista"}
 
-    # Spara köpet (i verkligheten - skriv till databas)
     mock_user.setdefault("purchased_reports", []).append(today)
-    
     return {"status": "success", "message": f"Topplistan för {today} är köpt och tillgänglig"}
 
-from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
-from backend.database import SessionLocal
-from backend import models
-from pydantic import BaseModel
-
-# Databas-skapare (finns troligen redan)
+# === Databasfunktion ===
 def get_db():
     db = SessionLocal()
     try:
@@ -86,20 +95,23 @@ def get_db():
     finally:
         db.close()
 
-# Skapa Pydantic-modell för input
+# === Skapa ny användare ===
 class UserCreate(BaseModel):
     email: str
     password: str
     license: str  # gratis / premium / guld
 
-# Routen som skapar en användare
 @app.post("/create_user")
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Användaren finns redan")
-    
-    new_user = models.User(email=user.email, password=user.password, license=user.license)
+
+    new_user = models.User(
+        email=user.email,
+        password=get_password_hash(user.password),  # 🔐 hashning
+        license=user.license
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
