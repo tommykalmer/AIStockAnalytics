@@ -1,25 +1,26 @@
-# auth.py
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import HTTPException, Depends, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from backend import models
 from backend import database
-from sqlalchemy.orm import Session
 
 router = APIRouter()
 
-# Secret key & algorithm for JWT
-SECRET_KEY = "your-secret-key"
+# === JWT-konfiguration ===
+SECRET_KEY = "your-secret-key"  # byt till säkrare nyckel i produktion
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# Password hashing context
+# === Lösenordshantering ===
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
-# === AUTH FUNKTIONER ===
+
+# === Hjälpfunktioner ===
 def get_password_hash(password):
     return pwd_context.hash(password)
 
@@ -59,23 +60,42 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     return user
 
-# === REGISTER USER ===
-@router.post("/register")
-def register_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
-    existing_user = db.query(models.User).filter(models.User.username == form_data.username).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Användarnamnet är redan registrerat.")
 
-    user = models.User(
-        username=form_data.username,
-        hashed_password=get_password_hash(form_data.password)
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return {"message": "Användare registrerad."}
+# === Modell för registrering ===
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    license: str = "gratis"
 
-# === LOGIN USER ===
+# === Skapa ny användare ===
+@router.post("/create_user")
+def create_user(user: UserCreate, db: Session = Depends(database.get_db)):
+    print("👉 CREATE_USER CALLED")
+    print("✉️ Email:", user.email)
+    print("🔒 Password:", user.password)
+    print("🔑 License:", user.license)
+    try:
+        existing_user = db.query(models.User).filter(models.User.username == user.email).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Användaren finns redan")
+
+        new_user = models.User(
+            username=user.email,
+            hashed_password=get_password_hash(user.password),
+            license=user.license,
+            registered_at=datetime.utcnow()
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        print("✅ User created")
+        return {"message": "Användare skapad"}
+    except Exception as e:
+        print("❌ ERROR:", e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+# === Login ===
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
@@ -85,7 +105,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
-# === PROTECTED ROUTE ===
+# === Skyddad route (exempel) ===
 @router.get("/protected")
 def protected_route(current_user: models.User = Depends(get_current_user)):
     return {"message": f"Välkommen, {current_user.username}! Detta är en skyddad route."}

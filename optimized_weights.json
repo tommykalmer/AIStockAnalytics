@@ -1,0 +1,27 @@
+{
+    "technical_weights": {
+        "RSI": 0.08,
+        "MACD": 0.08,
+        "OBV": 0.08,
+        "Volume": 0.08,
+        "Price Change 1W %": 0.08,
+        "Price Change 1M %": 0.08,
+        "MA Trend": 0.2,
+        "Bollinger Dist": 0.2,
+        "Support Dist": 0.2
+    },
+    "fundamental_weights": {
+        "P/E Ratio": 0.125,
+        "P/B Ratio": 0.125,
+        "EPS": 0.125,
+        "Dividend Yield": 0.125,
+        "ROE": 0.125,
+        "Debt/Equity": 0.125,
+        "Revenue Growth": 0.125,
+        "EPS Growth": 0.125
+    },
+    "hybrid_weights": {
+        "technical_weight": 0.6,
+        "fundamental_weight": 0.4
+    }
+}

@@ -116,3 +116,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     return {"status": "success", "user_id": new_user.id}
+
+from backend import admin
+app.include_router(admin.router)
+
