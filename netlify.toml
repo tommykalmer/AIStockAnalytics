@@ -1,9 +1,9 @@
 [build]
   base = "frontend"
-  publish = "frontend/build"
+  publish = "build"
   command = "npm run build"
 
 [[headers]]
   for = "/*"
   [headers.values]
-    Basic-Auth = "tommy:banan"
+  Basic-Auth = "tommy:banan"
