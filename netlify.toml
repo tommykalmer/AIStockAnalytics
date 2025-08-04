@@ -6,4 +6,4 @@
 [[headers]]
   for = "/*"
   [headers.values]
-  Basic-Auth = "tommy:banan"
+    Basic-Auth = "tommy:banan"
