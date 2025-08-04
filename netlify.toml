@@ -7,3 +7,4 @@
   for = "/*"
   [headers.values]
     Basic-Auth = "tommy:banan"
+    X-Debug-Test = "verify-header"
