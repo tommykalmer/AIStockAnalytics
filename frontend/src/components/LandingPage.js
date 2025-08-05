@@ -45,7 +45,7 @@ const LandingPage = () => {
               </p>
             </div>
             <div>
-              <h3>SektorPro – 29 €/month</h3>
+              <h3>SectorPro – 29 €/month</h3>
               <p>
                 ✔ Hybrid-score for one chosen sector<br />
                 ✔ ML-optimized signals per sector<br />
