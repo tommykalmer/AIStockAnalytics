@@ -31,22 +31,60 @@ const LandingPage = () => {
           </ul>
         </section>
 
+
         <section style={styles.section}>
-          <h2>Licenses</h2>
+          <h2>Licenses & Pricing</h2>
+        
           <div style={styles.licenseBox}>
             <div>
-              <h3>Free</h3>
-              <p>✔ Basic analysis tools<br />✔ 5 stocks per day<br />✔ Access to community updates</p>
+              <h3>Basic – 9 €/month</h3>
+              <p>
+                ✔ Hybrid-score for the entire market<br />
+                ✔ Not sector-optimized<br />
+                ✔ Monthly billing, prepaid
+              </p>
             </div>
             <div>
-              <h3>Premium</h3>
-              <p>✔ Full portfolio analysis<br />✔ Priority support<br />✔ Toplist features<br />✔ Unlimited stocks</p>
+              <h3>SektorPro – 29 €/month</h3>
+              <p>
+                ✔ Hybrid-score for one chosen sector<br />
+                ✔ ML-optimized signals per sector<br />
+                ✔ Monthly billing, prepaid
+              </p>
             </div>
             <div>
-              <h3>Gold</h3>
-              <p>✔ All Premium features<br />✔ Advanced ML reports<br />✔ Personalized email alerts<br />✔ Early access to new tools</p>
+              <h3>Pro+ – 69 €/month</h3>
+              <p>
+                ✔ All sectors included<br />
+                ✔ ML-optimization per sector<br />
+                ✔ All available signals and features<br />
+                ✔ Monthly billing, prepaid
+              </p>
             </div>
           </div>
+        
+          <h2 style={{ marginTop: "60px" }}>Add-ons</h2>
+          <ul style={styles.featuresList}>
+            <li>➕ <strong>Technical score (separate):</strong> +5 €/month</li>
+            <li>➕ <strong>Fundamental score (separate):</strong> +5 €/month</li>
+            <li>➕ <strong>Fundamental key figures (metadata):</strong> +9 €/month</li>
+            <li>➕ <strong>Extra sector (SektorPro):</strong> +7 €/month per extra sector</li>
+            <li>➕ <strong>Slack/webhook integration:</strong> +5 €/month per account</li>
+          </ul>
+          <p style={{ fontSize: "14px", color: "#666", marginTop: "10px" }}>
+            All add-ons billed prorated at purchase, synced with your license cycle.
+          </p>
+        
+          <h2 style={{ marginTop: "60px" }}>One-time Reports</h2>
+          <ul style={styles.featuresList}>
+            <li>📁 <strong>Single sector, one day:</strong> 9 €</li>
+            <li>📁 <strong>All sectors, one day:</strong> 19 €</li>
+            <li>📁 <strong>All sectors + metadata:</strong> 25 €</li>
+          </ul>
+          <p style={{ fontSize: "14px", color: "#666", marginTop: "10px" }}>
+            Instant delivery after payment. No subscription required.<br />
+            Ideal for sampling the system before subscribing.
+          </p>
         </section>
       </main>
 
