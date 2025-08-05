@@ -23,11 +23,11 @@ const LandingPage = () => {
         <section style={styles.section}>
           <h2>What You Can Do</h2>
           <ul style={styles.featuresList}>
-            <li>📊 Analyze your stock portfolio with daily AI-driven insights</li>
-            <li>📈 Get buy/sell recommendations based on real market data</li>
-            <li>🔍 Track technical & fundamental indicators in real-time</li>
-            <li>📥 Download full analysis reports in Excel</li>
-            <li>📬 Receive smart alerts when your stocks move</li>
+            <li>📈 Daily AI-powered hybrid scores for 1,400+ stocks across multiple markets</li>
+            <li>🧠 Machine learning–optimized signals tailored to your chosen sector</li>
+            <li>🔬 Separate technical and fundamental scoring (optional)</li>
+            <li>📊 Exportable Excel reports with full data and sector breakdowns</li>
+            <li>📥 One-click access to detailed analysis — no setup, no noise</li>
           </ul>
         </section>
 
