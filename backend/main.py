@@ -95,27 +95,7 @@ def get_db():
     finally:
         db.close()
 
-# === Skapa ny användare ===
-class UserCreate(BaseModel):
-    email: str
-    password: str
-    license: str  # gratis / premium / guld
 
-@app.post("/create_user")
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Användaren finns redan")
-
-    new_user = models.User(
-        email=user.email,
-        password=get_password_hash(user.password),  # 🔐 hashning
-        license=user.license
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"status": "success", "user_id": new_user.id}
 
 from backend import admin
 app.include_router(admin.router)
