@@ -68,6 +68,9 @@ class UserCreate(BaseModel):
     license: str = "gratis"
 
 # === Skapa ny användare ===
+from sqlalchemy.exc import IntegrityError
+
+# === Create new user ===
 @router.post("/create_user")
 def create_user(user: UserCreate, db: Session = Depends(database.get_db)):
     print("👉 CREATE_USER CALLED")
@@ -77,7 +80,7 @@ def create_user(user: UserCreate, db: Session = Depends(database.get_db)):
     try:
         existing_user = db.query(models.User).filter(models.User.username == user.email).first()
         if existing_user:
-            raise HTTPException(status_code=400, detail="Användaren finns redan")
+            raise HTTPException(status_code=400, detail="Email is already registered")
 
         new_user = models.User(
             username=user.email,
@@ -89,8 +92,12 @@ def create_user(user: UserCreate, db: Session = Depends(database.get_db)):
         db.commit()
         db.refresh(new_user)
         print("✅ User created")
-        return {"message": "Användare skapad"}
+        return {"message": "User successfully registered"}
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Email is already registered")
     except Exception as e:
+        db.rollback()
         print("❌ ERROR:", e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
