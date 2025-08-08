@@ -9,21 +9,21 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    const result = await login(email, password);
-    if (result.success) {
-      navigate("/dashboard");
-    } else {
-      setError(() => {
-        if (typeof result.message === "string") return result.message;
-        if (Array.isArray(result.message)) {
-          return result.message.map((e) => e.msg).join(", ");
-        }
-        return "Login failed.";
-      });
-      
-    }
-  };
+  e.preventDefault();
+  const result = await login(email, password);
+  if (result.success) {
+    localStorage.setItem("token", result.token);
+    navigate("/dashboard");
+  } else {
+    setError(() => {
+      if (typeof result.message === "string") return result.message;
+      if (Array.isArray(result.message)) {
+        return result.message.map((e) => e.msg).join(", ");
+      }
+      return "Login failed.";
+    });
+  }
+};
 
   return (
     <div style={styles.container}>
