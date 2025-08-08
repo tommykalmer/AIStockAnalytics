@@ -107,7 +107,7 @@ def create_user(user: UserCreate, db: Session = Depends(database.get_db)):
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
-        raise HTTPException(status_code=401, detail="Felaktigt användarnamn eller lösenord")
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
@@ -115,4 +115,4 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 # === Skyddad route (exempel) ===
 @router.get("/protected")
 def protected_route(current_user: models.User = Depends(get_current_user)):
-    return {"message": f"Välkommen, {current_user.username}! Detta är en skyddad route."}
+    return {"message": f"Welcome, {current_user.username}! This is a protected route."}
