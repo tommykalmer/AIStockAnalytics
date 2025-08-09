@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL, // sätts i .env
+  baseURL: "/api", // proxas av Netlify till din Render-backend
 });
 
 export default api;
