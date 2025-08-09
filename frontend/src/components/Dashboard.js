@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/client"; // ✅ byt till din API-klient
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,8 +13,8 @@ const Dashboard = () => {
       return;
     }
 
-    axios
-      .get("http://localhost:8000/me", {
+    api
+      .get("/me", {  // ✅ ingen hårdkodad localhost
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,58 +65,3 @@ const Dashboard = () => {
     </div>
   );
 };
-const styles = {
-  container: {
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
-    padding: "10px 30px",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-  },
-  logo: {
-    height: "40px",
-  },
-  title: {
-    fontSize: "24px",
-    color: "#333",
-    margin: 0,
-  },
-  logoutButton: {
-    backgroundColor: "#dc3545",
-    color: "white",
-    border: "none",
-    padding: "8px 16px",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-  main: {
-    textAlign: "center",
-    marginTop: "60px",
-  },
-  featureList: {
-    listStyleType: "none",
-    padding: 0,
-    fontSize: "18px",
-    marginTop: "20px",
-    color: "#444",
-  },
-  footer: {
-    marginTop: "auto",
-    textAlign: "center",
-    fontSize: "14px",
-    color: "#888",
-    padding: "20px",
-  },
-};
-export default Dashboard;
