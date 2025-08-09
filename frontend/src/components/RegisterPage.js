@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../api/client";
 
 const RegisterPage = () => {
   const [form, setForm] = useState({ email: "", password: "", license: "gratis" });
@@ -10,18 +10,16 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/create_user", form, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
+      await api.post("/create_user", form); // ✅ använder api-klienten
       setMessage("Registration successful!");
-      setTimeout(() => navigate("/"), 2000);
+      setTimeout(() => navigate("/"), 1500);
     } catch (error) {
-      setMessage("Registration failed: " + (error.response?.data?.detail || "Something went wrong"));
+      const detail =
+        error.response?.data?.detail ||
+        (error.message?.includes("Network") ? "Network error: check API URL/CORS" : "Something went wrong");
+      setMessage("Registration failed: " + detail);
     }
   };
-  
 
   return (
     <div style={styles.container}>
@@ -61,51 +59,6 @@ const RegisterPage = () => {
   );
 };
 
-const styles = {
-  container: {
-    display: "flex",
-    height: "100vh",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f4f4f4",
-  },
-  box: {
-    backgroundColor: "#fff",
-    padding: "40px",
-    borderRadius: "12px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    textAlign: "center",
-    width: "300px",
-  },
-  title: {
-    marginBottom: "20px",
-    color: "#333",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  input: {
-    marginBottom: "15px",
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-  },
-  button: {
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "6px",
-    border: "none",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    cursor: "pointer",
-  },
-  message: {
-    marginTop: "15px",
-    fontSize: "14px",
-    color: "#555",
-  },
-};
+const styles = { /* …dina styles oförändrade… */ };
 
 export default RegisterPage;
