@@ -16,7 +16,10 @@ app = FastAPI()
 # === Lägg till CORS om frontend ska kommunicera ===
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",                  # För utveckling lokalt
+        "https://<din-netlify-site>.netlify.app"  # Byt till din riktiga Netlify-URL
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
