@@ -13,12 +13,17 @@ from backend.auth import get_password_hash
 # === Initiera FastAPI ===
 app = FastAPI()
 
-# === Lägg till CORS om frontend ska kommunicera ===
+import os
+from fastapi.middleware.cors import CORSMiddleware
+
+# Hämta Netlify-frontend-URL från miljövariabel
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",                  # För utveckling lokalt
-        "https://<din-netlify-site>.netlify.app"  # Byt till din riktiga Netlify-URL
+        frontend_url,          # Produktionsdomänen
+        "http://localhost:3000"  # Utveckling lokalt
     ],
     allow_credentials=True,
     allow_methods=["*"],
